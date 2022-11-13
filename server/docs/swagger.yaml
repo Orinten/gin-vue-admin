@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   config.AliyunOSS:
     properties:
@@ -187,6 +186,10 @@ definitions:
       db-name:
         description: 数据库名
         type: string
+      engine:
+        default: InnoDB
+        description: 数据库引擎，默认InnoDB
+        type: string
       log-mode:
         description: 是否开启Gorm全局日志
         type: string
@@ -208,6 +211,55 @@ definitions:
       port:
         description: :端口
         type: string
+      prefix:
+        description: 全局表前缀，单独定义TableName则不生效
+        type: string
+      singular:
+        description: 是否开启全局禁用复数，true表示开启
+        type: boolean
+      username:
+        description: 数据库用户名
+        type: string
+    type: object
+  config.Oracle:
+    properties:
+      config:
+        description: 高级配置
+        type: string
+      db-name:
+        description: 数据库名
+        type: string
+      engine:
+        default: InnoDB
+        description: 数据库引擎，默认InnoDB
+        type: string
+      log-mode:
+        description: 是否开启Gorm全局日志
+        type: string
+      log-zap:
+        description: 是否通过zap写入日志文件
+        type: boolean
+      max-idle-conns:
+        description: 空闲中的最大连接数
+        type: integer
+      max-open-conns:
+        description: 打开到数据库的最大连接数
+        type: integer
+      password:
+        description: 数据库密码
+        type: string
+      path:
+        description: 服务器地址:端口
+        type: string
+      port:
+        description: :端口
+        type: string
+      prefix:
+        description: 全局表前缀，单独定义TableName则不生效
+        type: string
+      singular:
+        description: 是否开启全局禁用复数，true表示开启
+        type: boolean
       username:
         description: 数据库用户名
         type: string
@@ -220,6 +272,10 @@ definitions:
       db-name:
         description: 数据库名
         type: string
+      engine:
+        default: InnoDB
+        description: 数据库引擎，默认InnoDB
+        type: string
       log-mode:
         description: 是否开启Gorm全局日志
         type: string
@@ -241,6 +297,12 @@ definitions:
       port:
         description: :端口
         type: string
+      prefix:
+        description: 全局表前缀，单独定义TableName则不生效
+        type: string
+      singular:
+        description: 是否开启全局禁用复数，true表示开启
+        type: boolean
       username:
         description: 数据库用户名
         type: string
@@ -313,6 +375,8 @@ definitions:
       mysql:
         $ref: '#/definitions/config.Mysql'
         description: gorm
+      oracle:
+        $ref: '#/definitions/config.Oracle'
       pgsql:
         $ref: '#/definitions/config.Pgsql'
       qiniu:
@@ -340,6 +404,10 @@ definitions:
         type: string
       disable:
         type: boolean
+      engine:
+        default: InnoDB
+        description: 数据库引擎，默认InnoDB
+        type: string
       log-mode:
         description: 是否开启Gorm全局日志
         type: string
@@ -361,6 +429,12 @@ definitions:
       port:
         description: :端口
         type: string
+      prefix:
+        description: 全局表前缀，单独定义TableName则不生效
+        type: string
+      singular:
+        description: 是否开启全局禁用复数，true表示开启
+        type: boolean
       type:
         type: string
       username:
@@ -671,20 +745,31 @@ definitions:
   request.Register:
     properties:
       authorityId:
-        type: integer
+        example: int 角色id
+        type: string
       authorityIds:
-        items:
-          type: integer
-        type: array
+        example: '[]uint 角色id'
+        type: string
+      email:
+        example: 电子邮箱
+        type: string
       enable:
-        type: integer
+        example: int 是否启用
+        type: string
       headerImg:
+        example: 头像链接
         type: string
       nickName:
+        example: 昵称
         type: string
       passWord:
+        example: 密码
+        type: string
+      phone:
+        example: 电话号码
         type: string
       userName:
+        example: 用户名
         type: string
     type: object
   request.RollBack:
@@ -817,8 +902,7 @@ definitions:
     type: object
   response.PageResult:
     properties:
-      list:
-        type: object
+      list: {}
       page:
         type: integer
       pageSize:
@@ -837,8 +921,7 @@ definitions:
     properties:
       code:
         type: integer
-      data:
-        type: object
+      data: {}
       msg:
         type: string
     type: object
@@ -926,6 +1009,9 @@ definitions:
       autoMoveFile:
         description: 是否自动移动文件
         type: boolean
+      businessDB:
+        description: 业务数据库
+        type: string
       description:
         description: Struct中文名称
         type: string
@@ -987,6 +1073,9 @@ definitions:
         type: string
       require:
         description: 是否必填
+        type: boolean
+      sort:
+        description: 是否增加排序
         type: boolean
     type: object
   system.SysApi:
@@ -1068,6 +1157,8 @@ definitions:
     type: object
   system.SysBaseMenu:
     properties:
+      activeName:
+        type: string
       authoritys:
         items:
           $ref: '#/definitions/system.SysAuthority'
@@ -1225,6 +1316,8 @@ definitions:
     type: object
   system.SysMenu:
     properties:
+      activeName:
+        type: string
       authoritys:
         items:
           $ref: '#/definitions/system.SysAuthority'
@@ -2529,7 +2622,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
       security:
       - ApiKeyAuth: []
       summary: 下载模板
@@ -2550,7 +2643,7 @@ paths:
       - application/octet-stream
       responses:
         "200":
-          description: ""
+          description: OK
       security:
       - ApiKeyAuth: []
       summary: 导出Excel
